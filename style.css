@@ -104,15 +104,18 @@ header h1 {
     font-size: 1.1rem;
 }
 
+/* Dashboard Layout */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    /* Giving a bit more space to the input section */
+    grid-template-columns: 1.3fr 1.5fr;
     gap: 2rem;
+    align-items: start;
 }
 
 @media (min-width: 900px) {
     .dashboard-grid {
-        grid-template-columns: 1fr 1.5fr;
+        grid-template-columns: 1.2fr 1fr;
         align-items: start;
     }
 }
@@ -293,19 +296,29 @@ button:active {
     margin-bottom: 2rem;
 }
 
+/* Input Grid Layout */
 .input-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    /* Adjusted columns: First column (Label) is auto width but with a max, others are flexible but with min-width */
+    grid-template-columns: minmax(140px, 1.2fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(110px, 1fr);
     gap: 1rem;
     align-items: center;
+    margin-top: 1rem;
 }
 
 .grid-header {
     font-weight: 600;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
     color: var(--text-muted);
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--glass-border);
+    /* Changed from --text-secondary to --text-muted */
+    font-size: 0.9rem;
+    text-align: center;
+    /* Center headers */
+}
+
+/* Align label left, others centered by default but inputs stretch */
+.grid-header:first-child {
+    text-align: left;
 }
 
 .grid-label {

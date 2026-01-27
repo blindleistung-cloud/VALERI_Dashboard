@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALERI - Energy Investment Valuation</title>
+    <title>VALERI - Wirtschaftlichkeitsberechnung</title>
     <meta name="description"
-        content="Calculate the valuation of energy related investments (VALERI) based on DIN EN 17463.">
+        content="Berechnung der Wirtschaftlichkeit von energiebezogenen Investitionen (VALERI) nach DIN EN 17463.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,26 +22,26 @@
     <main class="container">
         <header>
             <h1>VALERI Dashboard</h1>
-            <p class="subtitle">Valuation of Energy Related Investments (DIN EN 17463)</p>
+            <p class="subtitle">Bewertung von energiebezogenen Investitionen (DIN EN 17463)</p>
         </header>
 
         <div class="dashboard-grid">
             <section class="input-section glass-card">
-                <h2>Project Parameters & Scenarios</h2>
+                <h2>Projektparameter & Szenarien</h2>
                 <form id="valeri-form">
 
                     <!-- WACC / Interest Rate Section -->
                     <div class="section-group">
-                        <h3>1. Interest Rate Determination (WACC)</h3>
+                        <h3>1. Zinssatzermittlung (WACC)</h3>
                         <div class="input-grid wacc-grid">
                             <div class="grid-header">Parameter</div>
-                            <div class="grid-header" style="color:var(--primary-color)">Likely Case</div>
+                            <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlicher Fall</div>
                             <div class="grid-header" style="color:#f87171">Worst Case</div>
                             <div class="grid-header" style="color:#4ade80">Best Case</div>
 
                             <!-- Equity Ratio -->
                             <div class="grid-label">
-                                Equity Ratio (S<sub>eq</sub>) [%]
+                                Eigenkapitalanteil (S<sub>eq</sub>) [%]
                             </div>
                             <div class="grid-input full-width">
                                 <input type="number" id="equity-ratio" value="50" min="0" max="100" step="1">
@@ -49,7 +49,7 @@
 
                             <!-- Debt Ratio (Calculated) -->
                             <div class="grid-label">
-                                Debt Ratio (S<sub>debt</sub>) [%]
+                                Fremdkapitalanteil (S<sub>debt</sub>) [%]
                             </div>
                             <div class="grid-input full-width">
                                 <input type="number" id="debt-ratio" value="50" disabled>
@@ -57,7 +57,7 @@
 
                             <!-- Cost of Equity -->
                             <div class="grid-label">
-                                Cost of Equity (r<sub>eq</sub>) [%]
+                                Eigenkapitalzinssatz (r<sub>eq</sub>) [%]
                             </div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="req"
                                     data-case="likely" value="7.0" step="0.1"></div>
@@ -68,7 +68,7 @@
 
                             <!-- Cost of Debt -->
                             <div class="grid-label">
-                                Cost of Debt (r<sub>debt</sub>) [%]
+                                Fremdkapitalzinssatz (r<sub>debt</sub>) [%]
                             </div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="rdebt"
                                     data-case="likely" value="6.0" step="0.1"></div>
@@ -79,7 +79,7 @@
 
                             <!-- WACC Result -->
                             <div class="grid-label highlight">
-                                <strong>Calculated WACC (r) [%]</strong>
+                                <strong>Kalkulationszinssatz (r) [%]</strong>
                             </div>
                             <div class="grid-input highlight"><span id="wacc-likely">6.50%</span></div>
                             <div class="grid-input highlight"><span id="wacc-worst">9.75%</span></div>
@@ -89,15 +89,15 @@
 
                     <!-- Scenario Parameters Section -->
                     <div class="section-group">
-                        <h3>2. Scenario Parameters</h3>
+                        <h3>2. Szenarioparameter</h3>
                         <div class="input-grid scenario-grid">
                             <div class="grid-header">Parameter</div>
-                            <div class="grid-header">Likely Case</div>
+                            <div class="grid-header">Wahrscheinlicher Fall</div>
                             <div class="grid-header">Worst Case</div>
                             <div class="grid-header">Best Case</div>
 
                             <!-- Investment -->
-                            <div class="grid-label">Investment (€)</div>
+                            <div class="grid-label">Investition (€)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="invest"
                                     data-case="likely" value="60000"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="invest"
@@ -105,8 +105,35 @@
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="invest"
                                     data-case="best" value="50000"></div>
 
+                            <!-- Grant/Subsidy -->
+                            <div class="grid-label">Förderung (t=0) (€)</div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy"
+                                    data-case="likely" value="0" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy"
+                                    data-case="worst" value="0" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy"
+                                    data-case="best" value="5000" min="0"></div>
+
+                            <!-- Annual Operating Costs -->
+                            <div class="grid-label">Jährliche Betriebskosten (€/a)</div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="ops_cost"
+                                    data-case="likely" value="1000" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="ops_cost"
+                                    data-case="worst" value="1500" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="ops_cost"
+                                    data-case="best" value="800" min="0"></div>
+
+                            <!-- Other Annual Revenues -->
+                            <div class="grid-label">Sonstige jährl. Erträge (€/a)</div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="other_rev"
+                                    data-case="likely" value="0" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="other_rev"
+                                    data-case="worst" value="0" min="0"></div>
+                            <div class="grid-input"><input type="number" class="scenario-input" data-param="other_rev"
+                                    data-case="best" value="0" min="0"></div>
+
                             <!-- Energy Savings -->
-                            <div class="grid-label">Energy Savings (kWh/a)</div>
+                            <div class="grid-label">Jährliche Energieeinsparung (kWh/a)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="savings"
                                     data-case="likely" value="150000"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="savings"
@@ -115,7 +142,7 @@
                                     data-case="best" value="175000"></div>
 
                             <!-- Energy Price Increase -->
-                            <div class="grid-label">Energy Price Increase (%/a)</div>
+                            <div class="grid-label">Energiepreissteigerung (%/a)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="p_inc"
                                     data-case="likely" value="3.0" step="0.1"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="p_inc"
@@ -124,7 +151,7 @@
                                     data-case="best" value="4.5" step="0.1"></div>
 
                             <!-- Service Price Increase -->
-                            <div class="grid-label">Service Price Increase (%/a)</div>
+                            <div class="grid-label">Preissteigerung Dienstl. (%/a)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="s_inc"
                                     data-case="likely" value="2.0" step="0.1"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="s_inc"
@@ -133,7 +160,7 @@
                                     data-case="best" value="3.0" step="0.1"></div>
 
                             <!-- Lifetime -->
-                            <div class="grid-label">Lifetime (Years)</div>
+                            <div class="grid-label">Laufzeit (Jahre)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="life"
                                     data-case="likely" value="15"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="life"
@@ -145,16 +172,16 @@
 
                     <!-- Common Parameters -->
                     <div class="section-group">
-                        <h3>3. Common Parameters</h3>
+                        <h3>3. Gemeinsame Parameter</h3>
                         <div class="form-group" style="max-width: 300px;">
-                            <label for="price">Base Energy Price (€/kWh)</label>
+                            <label for="price">Basis-Energiepreis (€/kWh)</label>
                             <input type="number" id="base-price" required min="0" step="0.0001" value="0.20">
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn-primary">Calculate Scenarios</button>
-                        <button type="button" id="reset-btn" class="btn-secondary">Reset</button>
+                        <button type="submit" class="btn-primary">Berechnen</button>
+                        <button type="button" id="reset-btn" class="btn-secondary">Zurücksetzen</button>
                     </div>
                 </form>
             </section>
@@ -162,26 +189,26 @@
             <section class="results-section">
                 <!-- Comparison Table -->
                 <div class="glass-card result-card full-width">
-                    <h3>Scenario Comparison Results</h3>
+                    <h3>Szenario-Vergleich</h3>
                     <div class="table-responsive">
                         <table class="comparison-table">
                             <thead>
                                 <tr>
-                                    <th>Metric</th>
-                                    <th style="color:var(--primary-color)">Likely Case</th>
+                                    <th>Metrik</th>
+                                    <th style="color:var(--primary-color)">Wahrscheinlicher Fall</th>
                                     <th style="color:#f87171">Worst Case</th>
                                     <th style="color:#4ade80">Best Case</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Net Present Value (NPV)</td>
+                                    <td>Kapitalwert (NPV)</td>
                                     <td class="result-value" id="res-npv-likely">--</td>
                                     <td class="result-value" id="res-npv-worst">--</td>
                                     <td class="result-value" id="res-npv-best">--</td>
                                 </tr>
                                 <tr>
-                                    <td>Payback Period</td>
+                                    <td>Amortisationszeit</td>
                                     <td id="res-payback-likely">--</td>
                                     <td id="res-payback-worst">--</td>
                                     <td id="res-payback-best">--</td>
@@ -192,7 +219,7 @@
                 </div>
 
                 <div class="glass-card chart-card">
-                    <h3>Cash Flow Projection (Likely Case)</h3>
+                    <h3>Zahlungsstrom (Wahrscheinlicher Fall)</h3>
                     <div class="chart-container">
                         <div id="cashflow-table-container"></div>
                     </div>

@@ -60,34 +60,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Get Project Params for this case
             const I0 = parseFloat(document.querySelector(`.scenario-input[data-param="invest"][data-case="${caseName}"]`).value);
+            const Subsidy = parseFloat(document.querySelector(`.scenario-input[data-param="subsidy"][data-case="${caseName}"]`).value) || 0;
+            const OpsCost = parseFloat(document.querySelector(`.scenario-input[data-param="ops_cost"][data-case="${caseName}"]`).value) || 0;
+            const OtherRev = parseFloat(document.querySelector(`.scenario-input[data-param="other_rev"][data-case="${caseName}"]`).value) || 0;
+
             const E_save = parseFloat(document.querySelector(`.scenario-input[data-param="savings"][data-case="${caseName}"]`).value);
             const i_p = parseFloat(document.querySelector(`.scenario-input[data-param="p_inc"][data-case="${caseName}"]`).value) / 100;
-            const i_s = parseFloat(document.querySelector(`.scenario-input[data-param="s_inc"][data-case="${caseName}"]`).value) / 100; // Service price increase, currently unused in simple formula but good to have
+            const i_s = parseFloat(document.querySelector(`.scenario-input[data-param="s_inc"][data-case="${caseName}"]`).value) / 100;
             const T = parseInt(document.querySelector(`.scenario-input[data-param="life"][data-case="${caseName}"]`).value);
 
             // Calculate NPV and Payback
-            const res = calculateNPV(I0, E_save, P0, i_p, wacc, T);
+            const res = calculateNPV(I0, Subsidy, OpsCost, OtherRev, E_save, P0, i_p, i_s, wacc, T);
             results[caseName] = res;
 
             // Update Result UI
             updateResultUI(caseName, res.npv, res.payback, T);
         });
 
-        // 3. Show Table/Chart for Likely Case (or all? For now just Likely as per design)
+        // 3. Show Table/Chart for Likely Case
         displayTable(results['likely'].cashFlows);
     }
 
-    function calculateNPV(I0, E_save, P0, i_p, discountRate, T) {
-        let totalNPV = -I0;
-        let cumulativeDCF = -I0;
+    function calculateNPV(I0, Subsidy, OpsCost, OtherRev, E_save, P0, i_p, i_s, discountRate, T) {
+        // Initial Cash Flow (t=0)
+        // Investment is negative, Subsidy is positive
+        const CF0 = -I0 + Subsidy;
+
+        let totalNPV = CF0;
+        let cumulativeDCF = CF0;
         let paybackPeriod = null;
         let cashFlows = [];
 
+        // Add Year 0 to table data
+        cashFlows.push({
+            year: 0,
+            price: P0,
+            nominal: CF0,
+            discounted: CF0,
+            cumulative: cumulativeDCF
+        });
+
+        if (cumulativeDCF >= 0) {
+            paybackPeriod = 0;
+        }
+
         for (let t = 1; t <= T; t++) {
-            // Annual Savings (Nominal Cash Flow)
-            // Assuming price increase starts from year 1
-            const currentPrice = P0 * Math.pow(1 + i_p, t);
-            const annualCashFlow = E_save * currentPrice;
+            // 1. Energy Savings (escalated by energy price increase)
+            const currentEnergyPrice = P0 * Math.pow(1 + i_p, t);
+            const savingsFlow = E_save * currentEnergyPrice;
+
+            // 2. Annual Operating Costs (escalated by service price increase)
+            const currentOpsCost = OpsCost * Math.pow(1 + i_s, t);
+
+            // 3. Other Annual Revenues (escalated by service price increase)
+            const currentOtherRev = OtherRev * Math.pow(1 + i_s, t);
+
+            // Net Annual Cash Flow
+            const annualCashFlow = savingsFlow - currentOpsCost + currentOtherRev;
 
             // Discounted Cash Flow
             const dcf = annualCashFlow / Math.pow(1 + discountRate, t);
@@ -103,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             cashFlows.push({
                 year: t,
-                price: currentPrice,
+                price: currentEnergyPrice,
                 nominal: annualCashFlow,
                 discounted: dcf,
                 cumulative: cumulativeDCF
@@ -124,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Payback
         if (payback === null) {
-            paybackEl.textContent = `> ${maxYears} Years`;
+            paybackEl.textContent = `> ${maxYears} Jahre`;
         } else {
-            paybackEl.textContent = `${payback.toFixed(1)} Years`;
+            paybackEl.textContent = `${payback.toFixed(1)} Jahre`;
         }
     }
 
@@ -135,11 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <table>
                 <thead>
                     <tr>
-                        <th>Year</th>
-                        <th>Energy Price (€)</th>
-                        <th>Cash Flow (€)</th>
-                        <th>Discounted (€)</th>
-                        <th>Cumulative (€)</th>
+                        <th>Jahr</th>
+                        <th>Energiepreis (€)</th>
+                        <th>Zahlungsstrom (€)</th>
+                        <th>Diskontiert (€)</th>
+                        <th>Kumuliert (€)</th>
                     </tr>
                 </thead>
                 <tbody>
