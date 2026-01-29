@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALERI Dashboard - KPI Visualisierung</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2canvas for Export -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1>VALERI Investitions-KPIs</h1>
+                <p class="subtitle">Detaillierte Analyse & Export</p>
+            </div>
+            <div class="nav-group" style="display:flex; gap:1rem;">
+
+                <a href="index.html" class="btn-secondary"
+                    style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">
+                    ← Zurück zur Berechnung
+                </a>
+            </div>
+        </header>
+
+        <section class="results-layout" id="export-container">
+            <!-- Export Toolbar -->
+            <div class="export-toolbar glass-card">
+                <button class="btn-export" id="btn-copy" title="In Zwischenablage kopieren"
+                    onclick="exportToClipboard()">
+                    📋 Kopieren
+                </button>
+                <button class="btn-export" id="btn-download" title="Als Bild herunterladen" onclick="downloadPNG()">
+                    💾 PNG Download
+                </button>
+                <button class="btn-export" id="btn-print" title="Als PDF drucken" onclick="printView()">
+                    🖨️ Drucken / PDF
+                </button>
+            </div>
+
+            <!-- Capture Area for Export -->
+            <div id="capture-area">
+                <div class="kpi-grid">
+
+                    <!-- CARD 1: NPV Focus -->
+                    <div class="kpi-card glass-card">
+                        <div class="card-header-row">
+                            <div class="icon-box green-icon">📈</div>
+                            <span class="card-badge">KAPITALWERT</span>
+                        </div>
+                        <h4>NPV (Wahrscheinlich)</h4>
+                        <div class="metric-large" id="kpi-npv-likely">-- €</div>
+
+                        <div class="context-container">
+                            <div class="context-item context-green">
+                                <span class="arrow">↗</span>
+                                <span class="label">Best:</span>
+                                <span class="value" id="kpi-npv-best">-- €</span>
+                            </div>
+                            <div class="context-item context-red">
+                                <span class="arrow">↘</span>
+                                <span class="label">Worst:</span>
+                                <span class="value" id="kpi-npv-worst">-- €</span>
+                            </div>
+                        </div>
+                        <p class="card-footer-text">Finanzieller Vorteil gegenüber Marktanlage.</p>
+                    </div>
+
+                    <!-- CARD 2: Amortization Comparison -->
+                    <div class="kpi-card glass-card">
+                        <div class="card-header-row">
+                            <div class="icon-box blue-icon">🕒</div>
+                            <span class="card-badge blue-badge">PAYBACK</span>
+                        </div>
+                        <h4>Amortisationsvergleich</h4>
+
+                        <div class="bars-container">
+                            <!-- Best Case Bar -->
+                            <div class="bar-group">
+                                <div class="bar-label-row">
+                                    <span>Best Case (<span id="lbl-life-best">--</span>J)</span>
+                                    <span class="bar-value green-text" id="lbl-pb-best">-- Jahre</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill green-fill" id="bar-pb-best" style="width: 0%;"></div>
+                                    <div class="regulation-marker" id="mark-reg-best"></div>
+                                    <div class="progress-marker" id="mark-life-best" style="left: 100%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Likely Case Bar -->
+                            <div class="bar-group">
+                                <div class="bar-label-row">
+                                    <span>Wahrscheinlich (<span id="lbl-life-likely">--</span>J)</span>
+                                    <span class="bar-value blue-text" id="lbl-pb-likely">-- Jahre</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill blue-fill" id="bar-pb-likely" style="width: 0%;"></div>
+                                    <div class="regulation-marker" id="mark-reg-likely"></div>
+                                    <div class="progress-marker" id="mark-life-likely" style="left: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Worst Case Bar -->
+                            <div class="bar-group">
+                                <div class="bar-label-row">
+                                    <span>Worst Case (<span id="lbl-life-worst">--</span>J)</span>
+                                    <span class="bar-value red-text" id="lbl-pb-worst">-- Jahre</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill red-fill" id="bar-pb-worst" style="width: 0%;"></div>
+                                    <div class="regulation-marker" id="mark-reg-worst"></div>
+                                    <div class="progress-marker" id="mark-life-worst" style="left: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-footer-text">
+                            <span style="color: #eab308; font-weight: bold;">| </span> <b>Gelber Marker:
+                                Wirtschaftlichkeitsgrenze</b><br>
+                            Überschreitet die Amortisationszeit diese Grenze, gilt die Maßnahme gemäß EnEfG i. V. m. DIN
+                            EN 17463 (VALERI) nicht als wirtschaftlich.<br>
+                            <i>- Leistenlänge entsprechen 15 Jahre Nutzungsdauer -</i>
+                        </p>
+                    </div>
+
+                    <!-- CARD 3: Energy Impact -->
+                    <div class="kpi-card glass-card">
+                        <div class="card-header-row">
+                            <div class="icon-box orange-icon">⚡</div>
+                            <span class="card-badge orange-badge">EINSPARUNG</span>
+                        </div>
+                        <h4>Energieeinsparung (Fokus)</h4>
+                        <div class="metric-large" id="kpi-savings">-- <span class="unit">kWh/a</span></div>
+
+                        <div class="chart-wrapper">
+                            <canvas id="energyChart"></canvas>
+                        </div>
+
+                        <div class="legend-row">
+                            <div class="legend-item">
+                                <span class="dot red-dot"></span>
+                                <div class="legend-text">
+                                    <span class="l-title">Worst</span>
+                                    <span class="l-sub" id="leg-p-worst">--%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot blue-dot"></span>
+                                <div class="legend-text">
+                                    <span class="l-title">Probable</span>
+                                    <span class="l-sub" id="leg-p-likely">--%</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot green-dot"></span>
+                                <div class="legend-text">
+                                    <span class="l-title">Best</span>
+                                    <span class="l-sub" id="leg-p-best">--%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-footer-text" id="chart-description">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4: Capital Structure Footer -->
+            <div class="footer-card glass-card">
+                <div class="footer-header">
+                    <div class="icon-circle">◎</div>
+                    <h3>Kapitalkosten & Struktur</h3>
+                </div>
+                <div class="footer-stats">
+                    <div class="stat-block">
+                        <span class="stat-label">WACC</span>
+                        <span class="stat-value" id="footer-wacc">--%</span>
+                    </div>
+                    <div class="stat-block">
+                        <span class="stat-label">Eigenkapital</span>
+                        <span class="stat-value" id="footer-equity">--%</span>
+                        <span class="stat-sub" id="footer-req">Zins: --%</span>
+                    </div>
+                    <div class="stat-block">
+                        <span class="stat-label">Fremdkapital</span>
+                        <span class="stat-value" id="footer-debt">--%</span>
+                        <span class="stat-sub" id="footer-rdebt">Zins: --%</span>
+                    </div>
+                    <div class="stat-block highlight">
+                        <span class="stat-label">Investitionssumme</span>
+                        <span class="stat-value large" id="footer-invest">-- €</span>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

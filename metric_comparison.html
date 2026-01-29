@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALERI - Wirtschaftlichkeits-Vergleich</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <span class="subtitle"
+                    style="display:block; margin-bottom:0.5rem; color:var(--primary-color); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Struktur-Analyse</span>
+                <h1>Wirtschaftlichkeits-Vergleich</h1>
+                <p class="subtitle">Vergleich der Kernmetriken über alle Szenarien hinweg (Worst, Wahrscheinlich, Best).
+                </p>
+            </div>
+            <div class="nav-group" style="display:flex; gap:1rem;">
+                <a href="index.html" class="btn-secondary"
+                    style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">
+                    ← Zurück zur Berechnung
+                </a>
+            </div>
+        </header>
+
+        <section class="results-layout">
+            <div class="glass-card" style="width: 100%; padding: 2rem;">
+                <div class="card-header-row" style="margin-bottom: 2rem;">
+                    <div class="icon-box blue-icon">◎</div>
+                    <h4>Metriken im Szenario-Vergleich</h4>
+                </div>
+
+                <div class="chart-container" style="position: relative; height: 500px; width: 100%;">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+
+                <div class="chart-legend" style="margin-top:2rem; display:flex; justify-content:center; gap:2rem;">
+                    <span
+                        style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:var(--text-secondary);">
+                        <span style="width:12px; height:12px; background:#f87171; border-radius:2px;"></span> WORST CASE
+                    </span>
+                    <span
+                        style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:var(--text-secondary);">
+                        <span style="width:12px; height:12px; background:#38bdf8; border-radius:2px;"></span>
+                        WAHRSCHEINLICH
+                    </span>
+                    <span
+                        style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; color:var(--text-secondary);">
+                        <span style="width:12px; height:12px; background:#4ade80; border-radius:2px;"></span> BEST CASE
+                    </span>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALERI - Wirtschaftlichkeitsberechnung</title>
-    <meta name="description"
-        content="Berechnung der Wirtschaftlichkeit von energiebezogenen Investitionen (VALERI) nach DIN EN 17463.">
+    <title>VALERI Dashboard - Wirtschaftlichkeitsanalyse</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2canvas for Export -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -162,11 +164,11 @@
                             <!-- Lifetime -->
                             <div class="grid-label">Laufzeit (Jahre)</div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="life"
-                                    data-case="likely" value="15"></div>
+                                    data-case="likely" value="15" max="15"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="life"
-                                    data-case="worst" value="8"></div>
+                                    data-case="worst" value="8" max="15"></div>
                             <div class="grid-input"><input type="number" class="scenario-input" data-param="life"
-                                    data-case="best" value="20"></div>
+                                    data-case="best" value="15" max="15"></div>
                         </div>
                     </div>
 
@@ -218,10 +220,40 @@
                     </div>
                 </div>
 
+                <!-- Navigation Button to KPI Dashboard -->
+                <div id="kpi-nav-container"
+                    style="display: none; flex-direction: column; align-items: center; gap: 1rem; margin: 1rem 0;">
+                    <button class="btn-secondary" onclick="window.location.href='metric_comparison.html'"
+                        style="padding: 0.8rem 2rem; border: 1px solid var(--primary-color);">
+                        📈 Struktur-Analyse
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='npv_curve.html'"
+                        style="padding: 0.8rem 2rem; border: 1px solid var(--primary-color);">
+                        📈 Kapitalwert-Verlauf
+                    </button>
+                    <button class="btn-primary" id="btn-open-kpi" onclick="window.location.href='kpi_dashboard.html'">
+                        📊 Kapitalwert-KPI
+                    </button>
+                </div>
+
                 <div class="glass-card chart-card">
                     <h3>Zahlungsstrom (Wahrscheinlicher Fall)</h3>
                     <div class="chart-container">
-                        <div id="cashflow-table-container"></div>
+                        <div id="cashflow-table-container-likely"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card chart-card">
+                    <h3 style="color:#f87171;">Zahlungsstrom (Worst Case)</h3>
+                    <div class="chart-container">
+                        <div id="cashflow-table-container-worst"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card chart-card">
+                    <h3 style="color:#4ade80;">Zahlungsstrom (Best Case)</h3>
+                    <div class="chart-container">
+                        <div id="cashflow-table-container-best"></div>
                     </div>
                 </div>
             </section>
