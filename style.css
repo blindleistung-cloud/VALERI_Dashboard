@@ -391,10 +391,19 @@ button:active {
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    /* Row 1: Cards, Row 2: Text */
+    grid-template-rows: auto auto;
     margin-bottom: 1.5rem;
-    align-items: stretch;
-    /* Force same height for all items */
+    gap: 1.5rem 2rem;
+    /* Column gap 1.5rem, Row gap (between card and text) 2rem */
+    align-items: start;
+}
+
+.kpi-column {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    /* No local gap needed as it uses parent's row-gap */
 }
 
 .kpi-card {
@@ -684,7 +693,7 @@ h4 {
     color: var(--text-secondary);
     text-align: left;
     width: 100%;
-    /* Fill grid cell width */
+    /* Fill flex parent width */
     font-style: normal;
     box-sizing: border-box;
     /* PREVENT PADDING FROM EXPANDING WIDTH */
@@ -792,14 +801,24 @@ h4 {
     }
 
     .kpi-grid {
-        grid-template-columns: 1fr 1fr;
-        /* 2 columns for cards */
+        /* Disable subgrid on tablet/mobile - simple stack */
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
     }
 
-    .kpi-card:last-child {
-        grid-column: span 2;
-        /* Chart spans full width */
+    .kpi-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
+
+    .kpi-column:last-child {
+        grid-column: span 2;
+        /* Center last item if odd number */
+    }
+
+    /* Chart spans full width - moved implicit logic to column span */
 }
 
 @media (max-width: 768px) {

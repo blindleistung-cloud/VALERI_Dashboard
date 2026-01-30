@@ -55,144 +55,144 @@
             <div id="capture-area">
                 <div class="kpi-grid">
 
-                    <!-- CARD 1: NPV Focus -->
-                    <div class="kpi-card glass-card">
-                        <div class="card-header-row">
-                            <div class="icon-box green-icon">📈</div>
-                            <span class="card-badge">KAPITALWERT</span>
-                        </div>
-                        <h4>NPV (Wahrscheinlich)</h4>
-                        <div class="metric-large" id="kpi-npv-likely">-- €</div>
-
-                        <div class="context-container">
-                            <div class="context-item context-green">
-                                <span class="arrow">↗</span>
-                                <span class="label">Best:</span>
-                                <span class="value" id="kpi-npv-best">-- €</span>
+                    <!-- COLUMN 1: NPV -->
+                    <div class="kpi-column">
+                        <div class="kpi-card glass-card">
+                            <div class="card-header-row">
+                                <div class="icon-box green-icon">📈</div>
+                                <span class="card-badge">KAPITALWERT</span>
                             </div>
-                            <div class="context-item context-red">
-                                <span class="arrow">↘</span>
-                                <span class="label">Worst:</span>
-                                <span class="value" id="kpi-npv-worst">-- €</span>
+                            <h4>NPV (Wahrscheinlich)</h4>
+                            <div class="metric-large" id="kpi-npv-likely">-- €</div>
+
+                            <div class="context-container">
+                                <div class="context-item context-green">
+                                    <span class="arrow">↗</span>
+                                    <span class="label">Best:</span>
+                                    <span class="value" id="kpi-npv-best">-- €</span>
+                                </div>
+                                <div class="context-item context-red">
+                                    <span class="arrow">↘</span>
+                                    <span class="label">Worst:</span>
+                                    <span class="value" id="kpi-npv-worst">-- €</span>
+                                </div>
                             </div>
                         </div>
 
-
+                        <!-- NPV Text -->
+                        <div id="npv-narrative-container" class="card-footer-text">
+                            <!-- Text will be injected by JS -->
+                        </div>
                     </div>
 
-                    <!-- CARD 2: Amortization Comparison -->
-                    <div class="kpi-card glass-card">
-                        <div class="card-header-row">
-                            <div class="icon-box blue-icon">🕒</div>
-                            <span class="card-badge blue-badge">PAYBACK</span>
-                        </div>
-                        <h4>Amortisationsvergleich</h4>
-                        <div class="metric-large" id="kpi-payback-likely">-- Jahre</div>
-
-                        <div class="bars-container">
-                            <!-- Best Case Bar -->
-                            <div class="bar-group">
-                                <div class="bar-label-row">
-                                    <span>Best Case (<span id="lbl-life-best">--</span>J)</span>
-                                    <span class="bar-value green-text" id="lbl-pb-best">-- Jahre</span>
-                                </div>
-                                <div class="progress-track">
-                                    <div class="progress-fill green-fill" id="bar-pb-best" style="width: 0%;"></div>
-                                    <div class="regulation-marker" id="mark-reg-best"></div>
-                                    <div class="progress-marker" id="mark-life-best" style="left: 100%;"></div>
-                                </div>
+                    <!-- COLUMN 2: Amortization -->
+                    <div class="kpi-column">
+                        <div class="kpi-card glass-card">
+                            <div class="card-header-row">
+                                <div class="icon-box blue-icon">🕒</div>
+                                <span class="card-badge blue-badge">PAYBACK</span>
                             </div>
+                            <h4>Amortisationsvergleich</h4>
+                            <div class="metric-large" id="kpi-payback-likely">-- Jahre</div>
 
-                            <!-- Likely Case Bar -->
-                            <div class="bar-group">
-                                <div class="bar-label-row">
-                                    <span>Wahrscheinlich (<span id="lbl-life-likely">--</span>J)</span>
-                                    <span class="bar-value blue-text" id="lbl-pb-likely">-- Jahre</span>
-                                </div>
-                                <div class="progress-track">
-                                    <div class="progress-fill blue-fill" id="bar-pb-likely" style="width: 0%;"></div>
-                                    <div class="regulation-marker" id="mark-reg-likely"></div>
-                                    <div class="progress-marker" id="mark-life-likely" style="left: 0%;"></div>
-                                </div>
-                            </div>
-
-                            <!-- Worst Case Bar -->
-                            <div class="bar-group">
-                                <div class="bar-label-row">
-                                    <span>Worst Case (<span id="lbl-life-worst">--</span>J)</span>
-                                    <span class="bar-value red-text" id="lbl-pb-worst">-- Jahre</span>
-                                </div>
-                                <div class="progress-track">
-                                    <div class="progress-fill red-fill" id="bar-pb-worst" style="width: 0%;"></div>
-                                    <div class="regulation-marker" id="mark-reg-worst"></div>
-                                    <div class="progress-marker" id="mark-life-worst" style="left: 0%;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- CARD 3: Energy Impact -->
-                    <div class="kpi-card glass-card">
-                        <div class="card-header-row">
-                            <div class="icon-box orange-icon">⚡</div>
-                            <span class="card-badge orange-badge">EINSPARUNG</span>
-                        </div>
-                        <h4>Energieeinsparung (Fokus)</h4>
-                        <div class="metric-large" id="kpi-savings">-- <span class="unit">kWh/a</span></div>
-
-                        <div style="display: flex; align-items: start; gap: 1rem;">
-                            <div class="chart-wrapper" style="flex-grow: 1; min-height: 100px;">
-                                <canvas id="energyChart"></canvas>
-                            </div>
-
-                            <div class="legend-row"
-                                style="display: flex; flex-direction: column; width: auto; gap: 0.8rem; padding-top: 1rem;">
-                                <div class="legend-item">
-                                    <span class="dot red-dot"></span>
-                                    <div class="legend-text">
-                                        <span class="l-title">WORST</span>
-                                        <span class="l-sub" id="leg-p-worst">--%</span>
+                            <div class="bars-container">
+                                <!-- Best Case Bar -->
+                                <div class="bar-group">
+                                    <div class="bar-label-row">
+                                        <span>Best Case (<span id="lbl-life-best">--</span>J)</span>
+                                        <span class="bar-value green-text" id="lbl-pb-best">-- Jahre</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill green-fill" id="bar-pb-best" style="width: 0%;"></div>
+                                        <div class="regulation-marker" id="mark-reg-best"></div>
+                                        <div class="progress-marker" id="mark-life-best" style="left: 100%;"></div>
                                     </div>
                                 </div>
-                                <div class="legend-item">
-                                    <span class="dot blue-dot"></span>
-                                    <div class="legend-text">
-                                        <span class="l-title">WAHRSCHEINLICH</span>
-                                        <span class="l-sub" id="leg-p-likely">--%</span>
+
+                                <!-- Likely Case Bar -->
+                                <div class="bar-group">
+                                    <div class="bar-label-row">
+                                        <span>Wahrscheinlich (<span id="lbl-life-likely">--</span>J)</span>
+                                        <span class="bar-value blue-text" id="lbl-pb-likely">-- Jahre</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill blue-fill" id="bar-pb-likely" style="width: 0%;">
+                                        </div>
+                                        <div class="regulation-marker" id="mark-reg-likely"></div>
+                                        <div class="progress-marker" id="mark-life-likely" style="left: 0%;"></div>
                                     </div>
                                 </div>
-                                <div class="legend-item">
-                                    <span class="dot green-dot"></span>
-                                    <div class="legend-text">
-                                        <span class="l-title">BEST</span>
-                                        <span class="l-sub" id="leg-p-best">--%</span>
+
+                                <!-- Worst Case Bar -->
+                                <div class="bar-group">
+                                    <div class="bar-label-row">
+                                        <span>Worst Case (<span id="lbl-life-worst">--</span>J)</span>
+                                        <span class="bar-value red-text" id="lbl-pb-worst">-- Jahre</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill red-fill" id="bar-pb-worst" style="width: 0%;"></div>
+                                        <div class="regulation-marker" id="mark-reg-worst"></div>
+                                        <div class="progress-marker" id="mark-life-worst" style="left: 0%;"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                    </div>
-                </div>
-
-                <!-- Text Grid (Under Cards) -->
-                <div class="kpi-grid" style="margin-top: 0; margin-bottom: 2rem;">
-                    <!-- NPV Text -->
-                    <div id="npv-narrative-container" class="card-footer-text">
-                        <!-- Text will be injected by JS -->
-                    </div>
-
-                    <!-- Amortization Text -->
-                    <div class="card-footer-text">
-                        <span style="color: #eab308; font-weight: bold;">| </span> <b>Gelber Marker:
-                            Wirtschaftlichkeitsgrenze</b><br>
-                        Überschreitet die Amortisationszeit diese Grenze, gilt die Maßnahme gemäß EnEfG i. V. m. DIN
-                        EN 17463 (VALERI) nicht als wirtschaftlich.<br>
-                        <i>- Leistenlänge entsprechen 15 Jahre Nutzungsdauer -</i>
+                        <!-- Amortization Text -->
+                        <div class="card-footer-text">
+                            <span style="color: #eab308; font-weight: bold;">| </span> <b>Gelber Marker:
+                                Wirtschaftlichkeitsgrenze</b><br>
+                            Überschreitet die Amortisationszeit diese Grenze, gilt die Maßnahme gemäß EnEfG i. V. m. DIN
+                            EN 17463 (VALERI) nicht als wirtschaftlich.<br>
+                            <i>- Leistenlänge entsprechen 15 Jahre Nutzungsdauer -</i>
+                        </div>
                     </div>
 
-                    <!-- Savings Text -->
-                    <div class="card-footer-text" id="chart-description">--</div>
+                    <!-- COLUMN 3: Savings -->
+                    <div class="kpi-column">
+                        <div class="kpi-card glass-card">
+                            <div class="card-header-row">
+                                <div class="icon-box orange-icon">⚡</div>
+                                <span class="card-badge orange-badge">EINSPARUNG</span>
+                            </div>
+                            <h4>Energieeinsparung (Fokus)</h4>
+                            <div class="metric-large" id="kpi-savings">-- <span class="unit">kWh/a</span></div>
+
+                            <div style="display: flex; align-items: start; gap: 1rem;">
+                                <div class="chart-wrapper" style="flex-grow: 1; min-height: 100px;">
+                                    <canvas id="energyChart"></canvas>
+                                </div>
+
+                                <div class="legend-row"
+                                    style="display: flex; flex-direction: column; width: auto; gap: 0.8rem; padding-top: 1rem;">
+                                    <div class="legend-item">
+                                        <span class="dot red-dot"></span>
+                                        <div class="legend-text">
+                                            <span class="l-title">WORST</span>
+                                            <span class="l-sub" id="leg-p-worst">--%</span>
+                                        </div>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="dot blue-dot"></span>
+                                        <div class="legend-text">
+                                            <span class="l-title">WAHRSCHEINLICH</span>
+                                            <span class="l-sub" id="leg-p-likely">--%</span>
+                                        </div>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="dot green-dot"></span>
+                                        <div class="legend-text">
+                                            <span class="l-title">BEST</span>
+                                            <span class="l-sub" id="leg-p-best">--%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Savings Text -->
+                        <div class="card-footer-text" id="chart-description">--</div>
+                    </div>
                 </div>
             </div>
 
