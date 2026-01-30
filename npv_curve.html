@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALERI - Kapitalwert-Verlauf</title>
+    <title>VALERI - Kapitalwertverlauf</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -26,7 +27,7 @@
                 <span class="subtitle"
                     style="display:block; margin-bottom:0.5rem; color:var(--primary-color); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Chart
                     Overview</span>
-                <h1>Kapitalwert-Verlauf (15 Jahre)</h1>
+                <h1>Kapitalwertverlauf (15 Jahre)</h1>
                 <p class="subtitle">Entwicklung des kumulierten Net Present Value (NPV) über die Zeit.</p>
             </div>
             <div class="nav-group" style="display:flex; gap:1rem;">
@@ -37,11 +38,27 @@
             </div>
         </header>
 
-        <section class="results-layout">
+        <!-- Export Toolbar -->
+        <div class="export-toolbar glass-card" style="margin-bottom: 1rem; display: flex; gap: 1rem; padding: 1rem;">
+            <button class="btn-export" id="btn-copy" title="In Zwischenablage kopieren" onclick="exportToClipboard()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                📋 Kopieren
+            </button>
+            <button class="btn-export" id="btn-download" title="Als Bild herunterladen" onclick="downloadPNG()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                💾 PNG Download
+            </button>
+            <button class="btn-export" id="btn-print" title="Als PDF drucken" onclick="printView()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                🖨️ Drucken / PDF
+            </button>
+        </div>
+
+        <section class="results-layout" id="capture-area">
             <div class="glass-card" style="width: 100%; padding: 2rem;">
                 <div class="card-header-row" style="margin-bottom: 2rem;">
                     <div class="icon-box blue-icon">📈</div>
-                    <h4>Kapitalwert-Entwicklung</h4>
+                    <h4>Kapitalwertentwicklung</h4>
                 </div>
 
                 <div class="chart-container" style="position: relative; height: 500px; width: 100%;">

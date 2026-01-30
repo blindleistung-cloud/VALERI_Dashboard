@@ -822,3 +822,118 @@ function downloadPNG() {
 }
 
 function printView() { window.print(); }
+
+function toggleSection(headerElement) {
+    const card = headerElement.closest('.collapsible-card');
+    const content = card.querySelector('.card-content');
+    const icon = card.querySelector('.toggle-icon');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+/* --- Data Export Features --- */
+
+function exportCashFlowsToCSV() {
+    // Current Results - Try window.results first, then localStorage
+    let results = window.results;
+    if (!results) {
+        const stored = localStorage.getItem('valeri_results');
+        if (stored) {
+            results = JSON.parse(stored);
+        }
+    }
+
+    if (!results) {
+        alert("Keine Daten zum Exportieren gefunden. Bitte zuerst berechnen.");
+        return;
+    }
+
+    const scenarios = ['likely', 'worst', 'best'];
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Szenario;Jahr;Cashflow;Diskontiert;Kumuliert (Disk.)\n";
+
+    scenarios.forEach(scen => {
+        const stream = results.cases[scen]?.cashFlows;
+        if (stream) {
+            stream.forEach(row => {
+                // Ensure number format is German-like (comma decimal)
+                const flow = row.flow.toFixed(2).replace('.', ',');
+                const disc = row.disc.toFixed(2).replace('.', ',');
+                const cum = row.cum.toFixed(2).replace('.', ',');
+                const rowStr = `${scen.toUpperCase()};${row.year};${flow};${disc};${cum}`;
+                csvContent += rowStr + "\n";
+            });
+        }
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "valeri_cashflows.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportParametersToJSON() {
+    const data = {};
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        if (input.id) {
+            data[input.id] = input.value;
+        } else if (input.dataset.param) {
+            const key = `${input.dataset.param}_${input.dataset.case}`;
+            data[key] = input.value;
+        }
+    });
+
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "valeri_parameters.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function importParametersFromJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            for (const [key, value] of Object.entries(data)) {
+                const elById = document.getElementById(key);
+                if (elById) {
+                    elById.value = value;
+                } else {
+                    const parts = key.lastIndexOf('_');
+                    if (parts !== -1) {
+                        const param = key.substring(0, parts);
+                        const kase = key.substring(parts + 1);
+                        const el = document.querySelector(`input[data-param="${param}"][data-case="${kase}"]`);
+                        if (el) el.value = value;
+                    }
+                }
+            }
+            alert("Parameter erfolgreich geladen! Berechnung wird aktualisiert...");
+            runCalculation();
+        } catch (err) {
+            alert("Fehler beim Laden der Datei: " + err);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}

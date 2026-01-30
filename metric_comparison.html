@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VALERI - Wirtschaftlichkeits-Vergleich</title>
+    <title>VALERI - Wirtschaftlichkeitsbergleich</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -23,7 +24,7 @@
             <div>
                 <span class="subtitle"
                     style="display:block; margin-bottom:0.5rem; color:var(--primary-color); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Struktur-Analyse</span>
-                <h1>Wirtschaftlichkeits-Vergleich</h1>
+                <h1>Wirtschaftlichkeitsvergleich</h1>
                 <p class="subtitle">Vergleich der Kernmetriken über alle Szenarien hinweg (Worst, Wahrscheinlich, Best).
                 </p>
             </div>
@@ -35,7 +36,23 @@
             </div>
         </header>
 
-        <section class="results-layout">
+        <!-- Export Toolbar -->
+        <div class="export-toolbar glass-card" style="margin-bottom: 1rem; display: flex; gap: 1rem; padding: 1rem;">
+            <button class="btn-export" id="btn-copy" title="In Zwischenablage kopieren" onclick="exportToClipboard()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                📋 Kopieren
+            </button>
+            <button class="btn-export" id="btn-download" title="Als Bild herunterladen" onclick="downloadPNG()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                💾 PNG Download
+            </button>
+            <button class="btn-export" id="btn-print" title="Als PDF drucken" onclick="printView()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                🖨️ Drucken / PDF
+            </button>
+        </div>
+
+        <section class="results-layout" id="capture-area">
             <div class="glass-card" style="width: 100%; padding: 2rem;">
                 <div class="card-header-row" style="margin-bottom: 2rem;">
                     <div class="icon-box blue-icon">◎</div>
