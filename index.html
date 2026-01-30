@@ -188,10 +188,10 @@
                         <!-- JSON Import/Export -->
                         <div style="flex:1; display:flex; gap:0.5rem;">
                             <button type="button" class="btn-secondary" onclick="exportParametersToJSON()"
-                                title="Parameter speichern">💾 Save</button>
+                                title="Parameter speichern">💾 Speichern</button>
                             <button type="button" class="btn-secondary"
                                 onclick="document.getElementById('json-upload').click()" title="Parameter laden">📂
-                                Load</button>
+                                Laden</button>
                             <input type="file" id="json-upload" style="display:none" accept=".json"
                                 onchange="importParametersFromJSON(event)">
                         </div>
@@ -242,8 +242,7 @@
                     <button class="btn-primary" id="btn-open-kpi" onclick="window.location.href='kpi_dashboard.html'">
                         📊 Kapitalwert-KPI
                     </button>
-                    <button class="btn-secondary" onclick="exportCashFlowsToCSV()"
-                        style="border: 1px solid var(--primary-color);">
+                    <button class="btn-primary" onclick="exportCashFlowsToCSV()">
                         💾 Cashflows (CSV)
                     </button>
                 </div>

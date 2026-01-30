@@ -76,7 +76,8 @@
                                 <span class="value" id="kpi-npv-worst">-- €</span>
                             </div>
                         </div>
-                        <p class="card-footer-text">Finanzieller Vorteil gegenüber Marktanlage.</p>
+
+
                     </div>
 
                     <!-- CARD 2: Amortization Comparison -->
@@ -86,6 +87,7 @@
                             <span class="card-badge blue-badge">PAYBACK</span>
                         </div>
                         <h4>Amortisationsvergleich</h4>
+                        <div class="metric-large" id="kpi-payback-likely">-- Jahre</div>
 
                         <div class="bars-container">
                             <!-- Best Case Bar -->
@@ -127,13 +129,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="card-footer-text">
-                            <span style="color: #eab308; font-weight: bold;">| </span> <b>Gelber Marker:
-                                Wirtschaftlichkeitsgrenze</b><br>
-                            Überschreitet die Amortisationszeit diese Grenze, gilt die Maßnahme gemäß EnEfG i. V. m. DIN
-                            EN 17463 (VALERI) nicht als wirtschaftlich.<br>
-                            <i>- Leistenlänge entsprechen 15 Jahre Nutzungsdauer -</i>
-                        </p>
+
                     </div>
 
                     <!-- CARD 3: Energy Impact -->
@@ -145,35 +141,58 @@
                         <h4>Energieeinsparung (Fokus)</h4>
                         <div class="metric-large" id="kpi-savings">-- <span class="unit">kWh/a</span></div>
 
-                        <div class="chart-wrapper">
-                            <canvas id="energyChart"></canvas>
+                        <div style="display: flex; align-items: start; gap: 1rem;">
+                            <div class="chart-wrapper" style="flex-grow: 1; min-height: 100px;">
+                                <canvas id="energyChart"></canvas>
+                            </div>
+
+                            <div class="legend-row"
+                                style="display: flex; flex-direction: column; width: auto; gap: 0.8rem; padding-top: 1rem;">
+                                <div class="legend-item">
+                                    <span class="dot red-dot"></span>
+                                    <div class="legend-text">
+                                        <span class="l-title">WORST</span>
+                                        <span class="l-sub" id="leg-p-worst">--%</span>
+                                    </div>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="dot blue-dot"></span>
+                                    <div class="legend-text">
+                                        <span class="l-title">WAHRSCHEINLICH</span>
+                                        <span class="l-sub" id="leg-p-likely">--%</span>
+                                    </div>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="dot green-dot"></span>
+                                    <div class="legend-text">
+                                        <span class="l-title">BEST</span>
+                                        <span class="l-sub" id="leg-p-best">--%</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="legend-row">
-                            <div class="legend-item">
-                                <span class="dot red-dot"></span>
-                                <div class="legend-text">
-                                    <span class="l-title">Worst</span>
-                                    <span class="l-sub" id="leg-p-worst">--%</span>
-                                </div>
-                            </div>
-                            <div class="legend-item">
-                                <span class="dot blue-dot"></span>
-                                <div class="legend-text">
-                                    <span class="l-title">Probable</span>
-                                    <span class="l-sub" id="leg-p-likely">--%</span>
-                                </div>
-                            </div>
-                            <div class="legend-item">
-                                <span class="dot green-dot"></span>
-                                <div class="legend-text">
-                                    <span class="l-title">Best</span>
-                                    <span class="l-sub" id="leg-p-best">--%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="card-footer-text" id="chart-description">--</p>
                     </div>
+                </div>
+
+                <!-- Text Grid (Under Cards) -->
+                <div class="kpi-grid" style="margin-top: 0; margin-bottom: 2rem;">
+                    <!-- NPV Text -->
+                    <div id="npv-narrative-container" class="card-footer-text">
+                        <!-- Text will be injected by JS -->
+                    </div>
+
+                    <!-- Amortization Text -->
+                    <div class="card-footer-text">
+                        <span style="color: #eab308; font-weight: bold;">| </span> <b>Gelber Marker:
+                            Wirtschaftlichkeitsgrenze</b><br>
+                        Überschreitet die Amortisationszeit diese Grenze, gilt die Maßnahme gemäß EnEfG i. V. m. DIN
+                        EN 17463 (VALERI) nicht als wirtschaftlich.<br>
+                        <i>- Leistenlänge entsprechen 15 Jahre Nutzungsdauer -</i>
+                    </div>
+
+                    <!-- Savings Text -->
+                    <div class="card-footer-text" id="chart-description">--</div>
                 </div>
             </div>
 

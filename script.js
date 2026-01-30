@@ -651,7 +651,12 @@ function updateKpiDashboard(results) {
     document.getElementById('lbl-pb-best').textContent = best.payback ? best.payback.toFixed(1) + ' Jahre' : '> ' + best.life;
 
     document.getElementById('lbl-life-likely').textContent = likely.life;
-    document.getElementById('lbl-pb-likely').textContent = likely.payback ? likely.payback.toFixed(1) + ' Jahre' : '> ' + likely.life;
+    const likelyPbText = likely.payback ? likely.payback.toFixed(1) + ' Jahre' : '> ' + likely.life + ' Jahre';
+    document.getElementById('lbl-pb-likely').textContent = likelyPbText;
+
+    // Large Metric for Amortization
+    const elPbLarge = document.getElementById('kpi-payback-likely');
+    if (elPbLarge) elPbLarge.textContent = likelyPbText;
 
     document.getElementById('lbl-life-worst').textContent = worst.life;
     document.getElementById('lbl-pb-worst').textContent = worst.payback ? worst.payback.toFixed(1) + ' Jahre' : '> ' + worst.life;
@@ -701,7 +706,7 @@ function updateKpiDashboard(results) {
     document.getElementById('leg-p-best').textContent = '+' + best.p_inc + '%';
 
     // Description Update
-    const desc = `Volumen: Die angenommenen jährlichen Einsparungen in Euro für jedes Szenario, basierend auf jährlicher Energieeinsparung, Energiepreis und dessen Steigerung.`;
+    const desc = `Die dargestellten Einsparverläufe basieren auf szenariospezifischen jährlichen Energieeinsparungen. Der ausgewiesene Wert von ${formatNum(likely.savings)} kWh/a entspricht dem wahrscheinlichen Szenario; Worst- und Best-Case beruhen auf abweichenden Einsparmengen sowie unterschiedlichen Annahmen zur Energiepreissteigerung.`;
     const descEl = document.getElementById('chart-description');
     if (descEl) descEl.textContent = desc;
 
@@ -717,6 +722,36 @@ function updateKpiDashboard(results) {
     document.getElementById('footer-req').textContent = 'Zins: ' + lInp.req.toFixed(1) + '%';
     document.getElementById('footer-rdebt').textContent = 'Zins: ' + lInp.rdebt.toFixed(1) + '%';
     document.getElementById('footer-wacc').textContent = lInp.wacc_disp;
+
+    updateNPVNarrative(results);
+}
+
+function updateNPVNarrative(results) {
+    const likely = results.cases.likely.npv;
+    const best = results.cases.best.npv;
+    const worst = results.cases.worst.npv;
+
+    const formatCurrency = (val) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+
+    let rank = 50;
+    if (best !== worst) {
+        rank = ((likely - worst) / (best - worst)) * 100;
+    }
+    // Clamp
+    rank = Math.max(0, Math.min(100, rank));
+
+    let band = "";
+    if (rank < 25) band = "nahe Worst-Case";
+    else if (rank < 45) band = "eher konservativ";
+    else if (rank < 55) band = "mittig in der Spannbreite";
+    else if (rank < 75) band = "eher optimistisch";
+    else band = "nahe Best-Case";
+
+    const text = `Wahrscheinlicher Kapitalwert: <strong>${formatCurrency(likely)}</strong>.<br>
+    Einordnung: <strong>${band}</strong> innerhalb der Szenariospannbreite von ${formatCurrency(worst)} bis ${formatCurrency(best)}, entsprechend einer Position von ${Math.round(rank)}% zwischen Worst- und Best-Case.`;
+
+    const container = document.getElementById('npv-narrative-container');
+    if (container) container.innerHTML = text;
 }
 
 function initEnergyChart() {
