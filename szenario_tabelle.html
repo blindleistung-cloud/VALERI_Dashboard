@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szenario-Tabelle - VALERI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .scenario-table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .scenario-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            background-color: rgba(255, 255, 255, 0.05); /* Slight contrast */
+        }
+        .scenario-data-table th, .scenario-data-table td {
+            padding: 0.75rem 1rem;
+            border: 2px solid #000; /* mimic screenshot dark bold borders */
+        }
+        .scenario-data-table th {
+            background-color: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+            text-align: center;
+        }
+        .scenario-data-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .table-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .highlight-row { 
+            background-color: rgba(255,255,255,0.15); 
+            font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header style="text-align: center; position: relative;">
+            <button class="btn-secondary" onclick="window.location.href='index.html'" style="position: absolute; left: 0; top: 0;">&larr; Zurück</button>
+            <h1>Szenario-Tabelle</h1>
+        </header>
+
+        <section class="glass-card full-width">
+            <div class="header-actions">
+                <h2>Ergebnisse - Szenarioanalyse</h2>
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button class="btn-primary" onclick="downloadScenarioTableCSV()" style="flex: none; width: auto; padding: 0.5rem 1.5rem;">💾 Download (CSV)</button>
+                    <button class="btn-primary" onclick="downloadScenarioTableLaTeX()" style="flex: none; width: auto; padding: 0.5rem 1.5rem;">📜 Download (LaTeX)</button>
+                </div>
+            </div>
+
+            <div class="scenario-table-container">
+                <table class="scenario-data-table" id="szenario-tabelle">
+                    <thead>
+                        <tr>
+                            <th>Einstellparameter</th>
+                            <th>Wahrscheinlich-<br>ster Fall</th>
+                            <th>Worst-Case</th>
+                            <th>Best-Case</th>
+                        </tr>
+                    </thead>
+                    <tbody id="szenario-tbody">
+                        <!-- Content inserted via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="szenario_tabelle.js"></script>
+</body>
+</html>
