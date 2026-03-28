@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas → Wärmepumpe - VALERI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <header style="text-align: center; position: relative; margin-bottom: 2rem;">
+            <button class="btn-secondary" onclick="window.location.href='index.html'" style="position: absolute; left: 0; top: 0;">&larr; Zurück</button>
+            <h1>Wärmesubstitution (Gas → WP)</h1>
+            <p class="subtitle">Bivalente oder monovalente Substitution von Erdgas</p>
+            
+            <div style="position: absolute; right: 0; top: 0; display: flex; gap: 0.5rem;">
+                <button type="button" class="btn-secondary" onclick="exportHSConfig()" style="font-size: 0.8rem; padding: 0.5rem 1rem;">⬇️ Parameter speichern</button>
+                <button type="button" class="btn-secondary" onclick="document.getElementById('hs-file-import').click()" style="font-size: 0.8rem; padding: 0.5rem 1rem;">⬆️ Parameter laden</button>
+                <input type="file" id="hs-file-import" accept=".json" style="display: none;" onchange="importHSConfig(event)">
+            </div>
+        </header>
+
+        <section class="glass-card full-width">
+            <div class="tabs-nav" id="hs-tabs">
+                <button class="tab-link active" onclick="openTab(event, 'tab-basis')">1. Grundlagen</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-wp')">2. Wärmepumpe</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-gas')">3. Gassystem</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-strom')">4. Stromsystem</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-invest')">5. Investition</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-results')">6. Ergebnisse</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-sens')">7. Sensitivität</button>
+                <button class="tab-link" onclick="openTab(event, 'tab-export')">8. Export</button>
+            </div>
+
+            <form id="hs-form">
+                
+                <!-- TAB 1: GRUNDLAGEN -->
+                <div id="tab-basis" class="tab-content active">
+                    <h3>1. Thermische Grundlagen</h3>
+                    <div class="input-grid scenario-grid">
+                        <div class="grid-header">Parameter</div>
+                        <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlich</div>
+                        <div class="grid-header" style="color:#f87171">Worst Case</div>
+                        <div class="grid-header" style="color:#4ade80">Best Case</div>
+
+                        <div class="grid-label">Substituierte Wärmemenge (kWh_th/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="q_sub" data-case="likely" value="500000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="q_sub" data-case="worst" value="450000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="q_sub" data-case="best" value="550000"></div>
+
+                        <div class="grid-label">Deckungsanteil Wärmepumpe (%)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_share" data-case="likely" value="80" max="100"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_share" data-case="worst" value="70" max="100"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_share" data-case="best" value="90" max="100"></div>
+
+                        <div class="grid-label">Installierte WP-Leistung (kW_th)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_capacity" data-case="likely" value="150"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_capacity" data-case="worst" value="180"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_capacity" data-case="best" value="130"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: WÄRMEPUMPE -->
+                <div id="tab-wp" class="tab-content">
+                    <h3>2. Wärmepumpe Performance</h3>
+                    <div class="input-grid scenario-grid">
+                        <div class="grid-header">Parameter</div>
+                        <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlich</div>
+                        <div class="grid-header" style="color:#f87171">Worst Case</div>
+                        <div class="grid-header" style="color:#4ade80">Best Case</div>
+
+                        <div class="grid-label">Saisonaler COP (SCOP)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="scop" data-case="likely" value="3.5" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="scop" data-case="worst" value="2.8" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="scop" data-case="best" value="4.2" step="0.1"></div>
+
+                        <div class="grid-label">Degradation (%/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_deg" data-case="likely" value="0.5" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_deg" data-case="worst" value="1.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_deg" data-case="best" value="0.2" step="0.1"></div>
+
+                        <div class="grid-label">Korrekturfaktor (Abtauung, Teillast)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_corr" data-case="likely" value="0.95" step="0.01"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_corr" data-case="worst" value="0.90" step="0.01"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hp_corr" data-case="best" value="1.00" step="0.01"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: GASSYSTEM -->
+                <div id="tab-gas" class="tab-content">
+                    <h3>3. Gas Referenzsystem</h3>
+                    <div class="input-grid scenario-grid">
+                        <div class="grid-header">Parameter</div>
+                        <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlich</div>
+                        <div class="grid-header" style="color:#f87171">Worst Case</div>
+                        <div class="grid-header" style="color:#4ade80">Best Case</div>
+
+                        <div class="grid-label">Gas System-Nutzungsgrad (%)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_eff" data-case="likely" value="90"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_eff" data-case="worst" value="85"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_eff" data-case="best" value="95"></div>
+
+                        <div class="grid-label">Gaspreis (€/kWh)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_price" data-case="likely" value="0.08" step="0.001"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_price" data-case="worst" value="0.06" step="0.001"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_price" data-case="best" value="0.12" step="0.001"></div>
+
+                        <div class="grid-label">Gaspreissteigerung (%/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_inc" data-case="likely" value="3.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_inc" data-case="worst" value="1.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="gas_inc" data-case="best" value="5.0" step="0.1"></div>
+
+                        <div class="grid-label">CO2-Kosten (€/t)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_price" data-case="likely" value="50"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_price" data-case="worst" value="30"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_price" data-case="best" value="80"></div>
+                        
+                        <div class="grid-label">CO2-Preissteigerung (%/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_inc" data-case="likely" value="5.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_inc" data-case="worst" value="2.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="co2_inc" data-case="best" value="8.0" step="0.1"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: STROMSYSTEM -->
+                <div id="tab-strom" class="tab-content">
+                    <h3>4. Stromsystem</h3>
+                    <div class="input-grid scenario-grid">
+                        <div class="grid-header">Parameter</div>
+                        <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlich</div>
+                        <div class="grid-header" style="color:#f87171">Worst Case</div>
+                        <div class="grid-header" style="color:#4ade80">Best Case</div>
+
+                        <div class="grid-label">Strompreis (€/kWh)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_price" data-case="likely" value="0.20" step="0.01"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_price" data-case="worst" value="0.25" step="0.01"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_price" data-case="best" value="0.15" step="0.01"></div>
+
+                        <div class="grid-label">Strompreissteigerung (%/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_inc" data-case="likely" value="2.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_inc" data-case="worst" value="4.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="el_inc" data-case="best" value="1.0" step="0.1"></div>
+
+                        <div class="grid-label">Netzentgelte / Leistungspreis (€/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="grid_cost" data-case="likely" value="2000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="grid_cost" data-case="worst" value="3000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="grid_cost" data-case="best" value="1000"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: INVESTITION -->
+                <div id="tab-invest" class="tab-content">
+                    <h3>5. Investition & OPEX</h3>
+                    <div class="input-grid scenario-grid">
+                        <div class="grid-header">Parameter</div>
+                        <div class="grid-header" style="color:var(--primary-color)">Wahrscheinlich</div>
+                        <div class="grid-header" style="color:#f87171">Worst Case</div>
+                        <div class="grid-header" style="color:#4ade80">Best Case</div>
+
+                        <div class="grid-label">Wärmepumpe inkl. Inst. (€)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_hp" data-case="likely" value="250000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_hp" data-case="worst" value="300000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_hp" data-case="best" value="200000"></div>
+
+                        <div class="grid-label">Elektrische Infrastruktur (€)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_el" data-case="likely" value="50000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_el" data-case="worst" value="80000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="capex_el" data-case="best" value="30000"></div>
+
+                        <div class="grid-label">Förderung (€)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy_sub" data-case="likely" value="50000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy_sub" data-case="worst" value="0"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="subsidy_sub" data-case="best" value="80000"></div>
+
+                        <div class="grid-label">Wartung WP (€/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_hp" data-case="likely" value="4000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_hp" data-case="worst" value="6000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_hp" data-case="best" value="2000"></div>
+
+                        <div class="grid-label">Vermiedene Wartung Gas (€/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_gas_avoid" data-case="likely" value="2000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_gas_avoid" data-case="worst" value="1000"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_gas_avoid" data-case="best" value="3000"></div>
+                        
+                        <div class="grid-label">OPEX Preissteigerung (%/a)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_inc" data-case="likely" value="2.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_inc" data-case="worst" value="3.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="opex_inc" data-case="best" value="1.0" step="0.1"></div>
+
+                        <div class="grid-label">Kalkulationszins (WACC) (%)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_wacc" data-case="likely" value="6.5" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_wacc" data-case="worst" value="8.0" step="0.1"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_wacc" data-case="best" value="4.0" step="0.1"></div>
+                        
+                        <div class="grid-label">Laufzeit (Jahre)</div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_life" data-case="likely" value="15" max="20"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_life" data-case="worst" value="10" max="20"></div>
+                        <div class="grid-input"><input type="number" class="scenario-input" data-param="hs_life" data-case="best" value="20" max="20"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: ERGEBNISSE -->
+                <div id="tab-results" class="tab-content">
+                    <h3>6. Ergebnisse & Visualisierung (Wahrscheinlichster Fall im Chart)</h3>
+                    
+                    <div class="kpi-grid" id="hs-kpi-cards" style="display: none; margin-bottom: 2rem;">
+                        <!-- Updated via JS -->
+                    </div>
+
+                    <div id="hs-charts-container" style="display: none;">
+                        <h4 style="margin-top: 2rem;">Cashflow-Entwicklung (kumuliert & jährlich)</h4>
+                        <div style="position: relative; height: 400px; width: 100%; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px;">
+                            <canvas id="hsCashflowChart"></canvas>
+                        </div>
+                        
+                        <h4 style="margin-top: 2rem;">Energiebilanz (Referenzjahr)</h4>
+                        <div style="position: relative; height: 300px; width: 100%; max-width: 600px; margin: 0 auto; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px;">
+                            <canvas id="hsEnergyChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="hs-results-placeholder" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+                        Bitte führen Sie zuerst eine Berechnung durch.
+                    </div>
+                </div>
+
+                <!-- TAB 7: SENSITIVITÄT -->
+                <div id="tab-sens" class="tab-content">
+                    <h3>7. Sensitivitätsanalyse</h3>
+                    <div id="hs-sens-container" style="display: none;">
+                        <p style="color:var(--text-muted); margin-bottom:1rem;">Einfluss der Parameter (+/- 10%) auf den NPV (Basis: Wahrscheinlichster Fall)</p>
+                        <div style="position: relative; height: 400px; width: 100%; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px;">
+                            <canvas id="hsSensChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="hs-sens-placeholder" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+                        Bitte führen Sie zuerst eine Berechnung durch.
+                    </div>
+                </div>
+
+                <!-- TAB 8: EXPORT -->
+                <div id="tab-export" class="tab-content">
+                    <h3>8. Export</h3>
+                    <div id="hs-export-container" style="display: none; gap: 1rem; flex-wrap: wrap;">
+                        <button type="button" class="btn-secondary" onclick="exportHSCsv()">💾 Download (CSV)</button>
+                        <button type="button" class="btn-secondary" onclick="exportHSLatex()">📜 Download (LaTeX)</button>
+                    </div>
+                    <div id="hs-export-placeholder" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+                        Bitte führen Sie zuerst eine Berechnung durch.
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 2rem;">
+                    <button type="submit" class="btn-primary" style="flex:2;">Berechnen & Analysieren</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <script src="heat_substitution_math.js"></script>
+    <script src="heat_substitution.js"></script>
+    <script src="heat_sub_ui.js"></script>
+</body>
+</html>
